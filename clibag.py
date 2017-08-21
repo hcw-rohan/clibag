@@ -1,148 +1,101 @@
-
+#!/usr/bin/python3
 """ command line interface based adventure game """
 
+from __future__ import print_function
+import os
 import time
 import sys
 import json
 
-def wait(seconds):
-    """ show a blinking dot """
+class Game(object):
+    """ Entry point """
+    json_data = ''
 
-    return
+    def __init__(self):
+        """ Constructor """
 
-    blink_time = 0.5
-    blinks = int(seconds/blink_time)
+        self.clear()
 
-    for i in range(0, blinks):
-        if i == 0 or i % 2 == 0:
-            sys.stdout.write('. ')
-        else:
-            sys.stdout.write('  ')
+    def load_json(self, filename):
+        """ load external json file """
 
-        sys.stdout.flush()
-        sys.stdout.write('\b\b')
-        time.sleep(blink_time)
+        with open(filename) as data_file:
+            self.json_data = json.load(data_file)
 
-    if seconds % blink_time != 0:
-        if int(seconds/blink_time) % 2 == 0:
-            sys.stdout.write('. ')
-        else:
-            sys.stdout.write('  ')
-            
-        sys.stdout.flush()
-        sys.stdout.write('\b\b')
-        time.sleep(seconds % blink_time)
+    @staticmethod
+    def clear():
+        """ clear the console """
 
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    @staticmethod
+    def wait(seconds):
+        """ show a blinking dot """
+
+        blink_time = 0.5
+        blinks = int(seconds/blink_time)
+
+        for i in range(0, blinks):
+            if i == 0 or i % 2 == 0:
+                sys.stdout.write('. ')
+            else:
+                sys.stdout.write('  ')
+
+            sys.stdout.flush()
+            sys.stdout.write('\b\b')
+            time.sleep(blink_time)
+
+        if seconds % blink_time != 0:
+            if int(seconds/blink_time) % 2 == 0:
+                sys.stdout.write('. ')
+            else:
+                sys.stdout.write('  ')
+
+            sys.stdout.flush()
+            sys.stdout.write('\b\b')
+            time.sleep(seconds % blink_time)
+
+    def ask_question(self, json_string):
+        """ ask the player a question """
+
+        self.clear()
+        json_object = json.loads(json_string)
+        print(json_object['text'])
+        self.wait(0.5)
+        for choice in json_object['choices']:
+            print(choice['label'])
+            self.wait(0.5)
+
+        correct_answer = False
+
+        while correct_answer is False:
+            answer = input('What is your choice? ')
+            for choice in json_object['choices']:
+                if answer.lower() == choice['answer']:
+                    print(choice['response'])
+                    return choice['result']
+
+            print('I don\'t understand')
+
+GAME = Game()
+GAME.load_json("dummy.json")
+
+# Entry point
 print('Welcome to CLI BAG')
-wait(3)
+GAME.wait(3)
 
-player_name = input('Name yourself: ')
+PLAYER_NAME = input('Name yourself: ')
 
 # Decision Tree demo
 print('Here\'s an introductory message')
-wait(2)
+GAME.wait(2)
 
-question1 = {
-    'text': 'You have a choice: ',
-    'choices': [
-        {
-            'label' : 'A: Do this',
-            'answer' : 'a',
-            'response' : 'You chose a',
-            'result' : 1
-        },
-        {
-            'label' : 'B: Do this',
-            'answer' : 'b',
-            'response' : 'You chose b',
-            'result' : 2
-        },
-        {
-            'label' : 'C: Do this',
-            'answer' : 'c',
-            'response' : 'You chose c',
-            'result' : 3
-        }
-    ]
-}
-
-question2 = {
-    'text': 'You have another choice: ',
-    'choices': [
-        {
-            'label' : 'A: Do this',
-            'answer' : 'a',
-            'response' : 'You chose a',
-            'result' : 'null'
-        },
-        {
-            'label' : 'B: Do this',
-            'answer' : 'b',
-            'response' : 'You chose b',
-            'result' : 'null'
-        },
-        {
-            'label' : 'C: Do this',
-            'answer' : 'c',
-            'response' : 'You chose c',
-            'result' : 'null'
-        }
-    ]
-}
-
-question3 = {
-    'text': 'You have a third choice: ',
-    'choices': [
-        {
-            'label' : 'A: Do this',
-            'answer' : 'a',
-            'response' : 'You chose a',
-            'result' : 'null'
-        },
-        {
-            'label' : 'B: Do this',
-            'answer' : 'b',
-            'response' : 'You chose b',
-            'result' : 'null'
-        },
-        {
-            'label' : 'C: Do this',
-            'answer' : 'c',
-            'response' : 'You chose c',
-            'result' : 'null'
-        }
-    ]
-}
-
-question_bank = [question1, question2, question3]
-
-def ask_question(json_string):
-    json_object = json.loads(json_string)
-    print(json_object['text'])
-    wait(0.5)
-    for choice in json_object['choices']:
-        print(choice['label'])
-        wait(0.5)
-
-    correct_answer = False
-
-    while correct_answer == False:
-        answer = input('What is your choice? ')
-        for choice in json_object['choices']:
-            if answer.lower() == choice['answer']:
-                print(choice['response'])
-                return choice['result']
-                correct_answer = True
-                break
-        
-        if correct_answer == False:
-            print('I don\'t understand')
-
-question_json = json.dumps(question_bank[0])
+# Get the questions
+QUESTIONS = GAME.json_data['questions']
 
 # Ask the first question
-result = ask_question(question_json)
+RESULT = GAME.ask_question(json.dumps(QUESTIONS[0]))
 
 # Start the game loop
-while result != 'null':
-    result = ask_question(json.dumps(question_bank[int(result) - 1]))
+while RESULT != 'null':
+    RESULT = GAME.ask_question(json.dumps(QUESTIONS[int(RESULT) - 1]))

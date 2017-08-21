@@ -1,0 +1,75 @@
+{
+  "questions":[
+  {
+    "text": "You have a choice: ",
+    "choices": [
+        {
+            "label" : "A: Do this",
+            "answer" : "a",
+            "response" : "You chose a",
+            "result" : 1
+        },
+        {
+            "label" : "B: Do this",
+            "answer" : "b",
+            "response" : "You chose b",
+            "result" : 2
+        },
+        {
+            "label" : "C: Do this",
+            "answer" : "c",
+            "response" : "You chose c",
+            "result" : 3
+        }
+    ]
+  },
+
+  {
+      "text": "You have another choice: ",
+      "choices": [
+          {
+              "label" : "A: Do this",
+              "answer" : "a",
+              "response" : "You chose a",
+              "result" : "null"
+          },
+          {
+              "label" : "B: Do this",
+              "answer" : "b",
+              "response" : "You chose b",
+              "result" : "null"
+          },
+          {
+              "label" : "C: Do this",
+              "answer" : "c",
+              "response" : "You chose c",
+              "result" : "null"
+          }
+      ]
+  },
+
+  {
+      "text": "You have a third choice: ",
+      "choices": [
+          {
+              "label" : "A: Do this",
+              "answer" : "a",
+              "response" : "You chose a",
+              "result" : "null"
+          },
+          {
+              "label" : "B: Do this",
+              "answer" : "b",
+              "response" : "You chose b",
+              "result" : "null"
+          },
+          {
+              "label" : "C: Do this",
+              "answer" : "c",
+              "response" : "You chose c",
+              "result" : "null"
+          }
+      ]
+  }
+  ]
+}
