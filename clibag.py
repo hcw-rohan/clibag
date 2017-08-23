@@ -3,24 +3,19 @@
 
 from __future__ import print_function
 import os
+import json
 import time
 import sys
-import json
+import requests
 
 class Game(object):
     """ Entry point """
-    json_data = ''
+    api_gateway = 'http://127.0.0.1:5000/api/'
 
     def __init__(self):
         """ Constructor """
 
         self.clear()
-
-    def load_json(self, filename):
-        """ load external json file """
-
-        with open(filename) as data_file:
-            self.json_data = json.load(data_file)
 
     @staticmethod
     def clear():
@@ -55,6 +50,10 @@ class Game(object):
             sys.stdout.write('\b\b')
             time.sleep(seconds % blink_time)
 
+    def get_question(self, qid):
+        r = requests.post(self.api_gateway, data={'qid':qid})
+        return r.text
+
     def ask_question(self, json_string):
         """ ask the player a question """
 
@@ -78,7 +77,6 @@ class Game(object):
             print('I don\'t understand')
 
 GAME = Game()
-GAME.load_json("dummy.json")
 
 # Entry point
 print('Welcome to CLI BAG')
@@ -90,12 +88,9 @@ PLAYER_NAME = input('Name yourself: ')
 print('Here\'s an introductory message')
 GAME.wait(2)
 
-# Get the questions
-QUESTIONS = GAME.json_data['questions']
-
 # Ask the first question
-RESULT = GAME.ask_question(json.dumps(QUESTIONS[0]))
+RESULT = GAME.ask_question(GAME.get_question('0'))
 
 # Start the game loop
 while RESULT != 'null':
-    RESULT = GAME.ask_question(json.dumps(QUESTIONS[int(RESULT) - 1]))
+    RESULT = GAME.ask_question(GAME.get_question(int(RESULT) - 1))
