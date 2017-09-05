@@ -4,6 +4,8 @@ import json
 json_data = ''
 app = Flask(__name__)
 
+is_debug = app.config['DEBUG']
+
 def load_json(filename):
     """ load external json file """
 
@@ -12,7 +14,12 @@ def load_json(filename):
 
     return json_data
 
-json_data = load_json("dummy.json")
+if (is_debug is True):
+    json_data = load_json("dummy.json")
+else:
+    #load the real data here
+    print("! No Game Data !")
+    exit()
 
 # Get the questions
 questions = json_data['questions']
@@ -25,6 +32,10 @@ def api():
     """ api request """
     questionid = request.form['qid']
 
-    print(json.dumps(questions[int(questionid)]))
+    if (is_debug is True):
+        print(json.dumps(questions[int(questionid)]))
 
     return str(json.dumps(questions[int(questionid)]))
+
+if __name__ == "__main__":
+   main(sys.argv[1:])

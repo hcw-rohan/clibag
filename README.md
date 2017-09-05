@@ -8,6 +8,7 @@ You'll need Python3, Flask and the requests library installed. Once downloaded, 
 
 ```
 export FLASK_APP=api.py
+export FLASK_DEBUG=1
 flask run
 ```
 
@@ -24,13 +25,13 @@ clibag
 
 ### Prerequisites
 
-Python3, Flask and requests.
+Python3, Flask, requests, colorama.
 
 On apt-get platforms (you will proabably need sudo)
 
 ```
 apt-get install python3 pip3
-pip3 install flask requests
+pip3 install flask requests colorama
 ```
 
 ### Installing
